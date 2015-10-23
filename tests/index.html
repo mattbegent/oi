@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>oi!</title>
+    <meta name="viewport" content="width=device-width">
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <header role="banner">
+            <h1>oi</h1>
+        </header>
+        
+        <main class="main" role="main">
+            <form id="oi" method="post" class="form c">
+                    
+                    <div class="form-row">
+                        <label for="name">Name</label>
+                        <input id="name" type="text" placeholder="Name" required="required" class="input-large" data-msg="WHoop. This is required."/>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="url">Url</label>
+                        <input id="url" type="url" placeholder="http://google.co.uk" class="input-large" required="required" data-msg-required="Required message" data-msg-type="Url error" data-msg="This is a general message" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="date">Date</label>
+                        <input id="date" type="date" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="color">Color</label>
+                        <input id="color" type="color" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="datetime">Datetime</label>
+                        <input id="datetime" type="datetime" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="datetime-local">datetime-local</label>
+                        <input id="datetime-local" type="datetime-local" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" placeholder="name@example.com" class="input-large" required="required" data-msg-email="Yo" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="file">File</label>
+                        <input id="file" type="file" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="Hidden">Hidden</label>
+                        <input id="Hidden" type="Hidden" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="month">Month</label>
+                        <input id="month" type="month" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="number">Number</label>
+                        <input id="number" type="number" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row form-row-checkbox">
+                        <label for="password1">Password</label>
+                        <input id="password1" type="password" required="required" pattern=".{6,}" data-msg-pattern="Pattern mismatch" />
+                    </div>
+
+                    <div class="form-row form-row-checkbox">
+                        <label for="password2">Confirm</label>
+                        <input id="password2" type="password" required="required" data-match="password1" data-msg-match="Please match the password above." />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="range">Range</label>
+                        <input id="range" type="range" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="tel">Tel</label>
+                        <input id="tel" type="tel" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="time">Time</label>
+                        <input id="time" type="time" class="input-large" required="required" />
+                    </div>
+
+                     <div class="form-row">
+                        <label for="week">Week</label>
+                        <input id="week" type="week" class="input-large" required="required" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="message">Comment</label>
+                        <textarea id="message" rows="5" class="input-xlarge"></textarea>
+                    </div>
+
+                    <div class="form-row form-row-checkbox">
+                        <label for="checkbox">A label with a checkbox</label>
+                        <input id="checkbox" type="checkbox" required="required"/>
+                    </div>
+
+                    <div class="form-row form-row-checkbox">
+                        <label for="radio">A label with a radio</label>
+                        <input id="radio" type="radio" required="required"/>
+                    </div>
+
+                    <div class="form-row">
+                        <button type="submit" id="submit">Submit</button>
+                    </div>
+
+                </form> 
+        </main>
+
+        <footer role="contentinfo">
+            <p><small>&copy; Copyright Information</small></p>
+        </footer>
+
+    </div>
+    
+    <script src="../oi.js"></script>
+
+    <script type="text/javascript">
+        oi.init();
+    </script>
+
+</body>
+</html>

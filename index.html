@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>oi!</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <header role="banner">
+            <h1 class="title--primary">oi!</h1>
+            <h2 class="title--secondary">A tiny form validation library for custom error messages</h2>
+        </header>
+        
+        <main class="main" role="main">
+
+            <h2>Example</h2>
+            <form id="oi" method="post" class="form c">
+                    
+                    <div class="form-row">
+                        <label for="name">Name</label>
+                        <input id="name" type="text" placeholder="Name" required="required" minlength="2" maxlength="20" class="input-large" data-msg-required="This is required is required. If you wouldn't mind sir."/>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" placeholder="name@example.com" class="input-large" required="required" data-msg-email="Yo" />
+                    </div>
+
+                    <div class="form-row">
+                        <label for="url">Url</label>
+                        <input id="url" type="url" placeholder="http://google.co.uk" class="input-large" required="required" data-msg-required="Required message" data-msg-type="Please enter a valid URL including the protocol." data-msg="This is a general message" />
+                    </div>
+
+                    <div class="form-row form-row-checkbox">
+                        <label for="password1">Password</label>
+                        <input id="password1" type="password" required="required" pattern=".{6,}" data-msg-pattern="Pattern mismatch" />
+                    </div>
+
+                    <div class="form-row form-row-checkbox">
+                        <label for="checkbox" class="label--inline">A label with a checkbox</label> 
+                        <input id="checkbox" type="checkbox" required="required"/>
+                    </div>
+
+                    <div class="form-row">
+                        <button type="submit" id="submit">Submit</button>
+                    </div>
+
+                </form> 
+
+        </main>
+
+    </div>
+    
+    <script src="oi.min.js"></script>
+
+    <script type="text/javascript">
+        oi.init();
+    </script>
+
+</body>
+</html>

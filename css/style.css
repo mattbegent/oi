@@ -1,0 +1,110 @@
+/* ==========================================================================
+   Style
+   ========================================================================== */
+
+body {
+	background-color: #333;
+	color: #FFF;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 100;
+}
+
+h1,
+h2,
+label,
+input {
+	font-weight: 100;
+}
+
+.wrapper {
+   width: 80%;
+   margin: 0 auto; 
+   max-width: 500px;
+}
+
+h1,
+h2 {
+	text-align: center;
+}
+
+.title--primary{
+	margin-bottom: 0;
+}
+
+.title--secondary{
+	font-size: 1.2em;
+	margin-top: 0;
+}
+
+input[type=text],
+input[type=url],
+input[type=password],
+input[type=email] {
+	background-color: #DFDFDF;
+	border: none;
+	padding: 0.5em;
+	width: 100%;
+}
+
+.form-row {
+	margin: 0 0 1em 0;
+}
+
+label {
+	display: block;
+}
+
+.label--inline {
+	display: inline;
+}
+
+.form__error-message{
+	display: block;
+	color: #df4949;
+	margin-top: 2px;
+	 -webkit-animation-duration: 500ms;
+  animation-duration: 500ms;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+	-webkit-animation-name: fadeInUp;
+  	animation-name: fadeInUp;
+}
+
+.field--interacted:invalid {
+	background-color: #df4949;
+	color: #FFF;
+}
+
+.field--interacted:valid {
+	background-color: #00B233;
+	color: #FFF;
+}
+
+
+@-webkit-keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 50%, 0);
+    transform: translate3d(0, 50%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 50%, 0);
+    transform: translate3d(0, 50%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
