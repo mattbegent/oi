@@ -1,7 +1,8 @@
-/* ==========================================================================
-   oi.js
-   ========================================================================== */
-
+/**
+* @fileOverview oi - A tiny form validation library for custom error messages
+* @author Matt Begent
+* @version 0.1.0
+*/
 
 var oi = (function(document) {
 
@@ -9,6 +10,11 @@ var oi = (function(document) {
 
     var opts = {};
 
+    /**
+    * Init oi
+    * @memberOf oi
+    * @param {args} options for oi
+    */
     function init(args) {
 
         if(!args) {
@@ -19,26 +25,28 @@ var oi = (function(document) {
             errorHTML: args.errorHTML || '<label class="form__error-message" for="{{id}}" role="alert">{{message}}</label>',
             errorClass: args.errorClass || 'form__error-message',
             interactedClass: args.interactedClass || 'field--interacted',
-            fallbackMessage: args.fallbackMessage || 'Please correct this field.',
-            error: args.error || function() {} // shouldn't really do this
+            error: args.error || undefined // shouldn't really do this
         };
 
         var inputElem = document.createElement('input');
-        if (('required' in inputElem)) { // test for validation support - is there a better test?    
+        if ('required' in inputElem) { // test for validation support - is there a better test?    
 
             // setup forms
             var forms = document.getElementsByTagName('form');
             for (var i = 0; i < forms.length; i++) {
                 setupForm(forms[i]);
             }
-            //setupMatches();
             setupInputWatches();
 
         }
 
     }
 
-    // Set up forms
+    /**
+    * Sets up a form for validation
+    * @memberOf oi
+    * @param {form} form to set up
+    */
     function setupForm(form) {
 
         form.noValidate = true;
@@ -52,6 +60,11 @@ var oi = (function(document) {
 
     }
 
+    /**
+    * Validates an individual input
+    * @memberOf oi
+    * @param {currentInput} input to validate
+    */
     function validateInput(currentInput) {
 
         if(!currentInput.checkValidity()) {
@@ -67,6 +80,11 @@ var oi = (function(document) {
 
     }
 
+    /**
+    * Validates an individual input
+    * @memberOf oi
+    * @param {currentInput} input to validate
+    */
     function setupInputWatches(context) {
 
         if(!context) {
@@ -85,42 +103,11 @@ var oi = (function(document) {
 
     }
 
-    // function setupMatch(input) {
-
-    //     var inputToMatchWith = document.getElementById(input.getAttribute('data-match'));
-    //     input.addEventListener('change', function() {
-    //         checkMatch(input, inputToMatchWith);
-    //     }, true);
-    //     inputToMatchWith.addEventListener('change', function() {
-    //         checkMatch(input, inputToMatchWith);
-    //     }, true);
-
-    // }
-
-    // function setupMatches() {
-
-    //     var matchInputs = document.querySelectorAll('[data-match]');
-    //     for (var i = 0; i < matchInputs.length; i++) {
-    //         setupMatch(matchInputs[i]);
-    //     }
-
-    // }
-
-    // function checkMatch(input, inputToMatchWith) {
-            
-    //     if (input.value !== inputToMatchWith.value) {
-    //         setMessage(input);
-    //         input.setCustomValidity(input.getAttribute('data-msg-match'));
-    //     } else {
-    //         input.setCustomValidity('');
-    //         var errorMessage = document.querySelector('.' + opts.errorClass + '[for="' + input.id + '"]');
-    //         if(errorMessage) {
-    //             errorMessage.parentNode.removeChild(errorMessage); // maybe don't remove?
-    //         }
-    //     }    
-
-    // }
-
+    /**
+    * Get all messages for the current context
+    * @memberOf oi
+    * @param {context} the context to get messages for
+    */
     function getMessages(context) {
 
         var invalidSelector = 'input:invalid, select:invalid, textarea:invalid';
@@ -133,6 +120,11 @@ var oi = (function(document) {
 
     }
 
+    /**
+    * Set the message for a given input
+    * @memberOf oi
+    * @param {input} input to set message for
+    */
     function setMessage(input) {
 
         //console.log(input.validity);
@@ -143,8 +135,7 @@ var oi = (function(document) {
         ((input.validity.tooLong) ? input.getAttribute('data-msg-long') : false) || 
         ((input.validity.customError) ? input.getAttribute('data-msg-custom') : false) || 
         input.getAttribute('data-msg') ||
-        input.validationMessage || 
-        opts.fallbackMessage;
+        input.validationMessage;
 
         var errorMessage = document.querySelector('.' + opts.errorClass + '[for="' + input.id + '"]');
         if(!errorMessage) {
@@ -153,17 +144,28 @@ var oi = (function(document) {
             errorMessage.textContent = message;
         }
 
-        opts.error(input);
-
-    }
-
-    function template(s,d){
-        for(var p in d) {
-            s=s.replace(new RegExp('{{'+p+'}}','g'), d[p]);
+        if(opts.error) {
+            opts.error(input);
         }
-        return s;
+
     }
 
+    /**
+    * Simple template
+    * @memberOf oi
+    * @param {templateString} the string to template
+    * @param {data} data to replace
+    */
+    function template(templateString, data) {
+
+        for(var property in data) {
+            templateString = templateString.replace(new RegExp('{{'+property+'}}','g'), data[property]);
+        }
+        return templateString;
+
+    }
+
+    // public api
     return {
         init: init,
         validateInput: validateInput
