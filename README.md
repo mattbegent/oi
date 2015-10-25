@@ -87,6 +87,10 @@ oi! uses the excelent HTML constraint validation api. For more detail check out 
 
 ## Browser Support
 
-As oi! uses the HTML constraint validation api, it only supports modern browsers - IE10+, Chrome, Firefox, Opera etc.
+As oi! uses the HTML constraint validation api, it only supports modern browsers - IE10+, Chrome, Firefox, Opera etc. For a full list see [form validation on Can I use](http://caniuse.com/#feat=form-validation).
 
 oi! checks for support as soon as possible, so in older browsers which don't support this feature it will simply fallback to your server side form validation:-).
+
+## Example Form
+
+Here is an [example form](http://mattbegent.github.io/oi/).
