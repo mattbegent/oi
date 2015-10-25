@@ -120,7 +120,7 @@ var oi = (function(document) {
             setMessage(invalidInputs[i]);
             invalidInputs[i].classList.add(opts.interactedClass);
         }
-        document.querySelector(invalidSelector).focus(); // focus on the first
+        context.querySelector(invalidSelector).focus(); // focus on the first
 
     }
 
