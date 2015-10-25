@@ -4,21 +4,23 @@ A tiny form validation library for custom error messages
 
 ## Getting started
 
-1. Download oi.js and include it at the bottom of your html `<script src="oi.min.js"></script>`
+1. Download oi.js and include it at the bottom of your HTML `<script src="oi.min.js"></script>`
 2. Initialise oi using `oi.init();`
 
 ## Options
 
-* **errorHTML** - the HTML for the error messages
-* **errorClass** - the class to add to error messages
-* **interactedClass** - the class that signals a field has been interacted with
-* **error** - this function is fired when an input is invalid
+* **errorHTML** - the HTML for the error messages.
+* **errorClass** - the class to add to error messages.
+* **errorPosition** - the position that the error message is display relative to the field. The error message is placed using insertAdjacentHTML so valid values are beforebegin and afterend.
+* **interactedClass** - the class that signals a field has been interacted with.
+* **error** - this function is fired when an input is invalid.
 
 A full example:
 ```
 oi.init({
     errorHTML: '<label class="form__error-message" for="{{id}}" role="alert">{{message}}</label>',
     errorClass: 'form__error-message',
+    errorPosition: 'afterend'
     interactedClass:'field--interacted',
     error: function(input) {
         alert('Error');
@@ -35,18 +37,18 @@ Custom error messages are what oi! is all about. Adding the following on inputs 
 * **data-msg-short** - the message displayed when a field  with `minlength` is too short.
 * **data-msg-long** - the message displayed when a field  with `maxlength` is too long.
 * **data-msg-custom** - the message displayed when a field has a custom error on it.
-* **data-msg** - this is used when you only want to display one message no matter what the error type is.
+* **data-msg** - this is used when you only want to display one message no matter what the error type.
 
 If you don't specify a message, the error message shown fallbacks to the error message from the browser.
 
-A example:
+An example with multiple messages:
 ```
  <input id="name" type="text" required="required" maxlength="20" 
  data-msg-required="This is field is required. If you wouldn't mind sir." <!-- Required message -->
  data-msg-long="This is field should be less than 20 characters. If you wouldn't mind sir." <!-- Too long message--> />
 ```
 
-A example where the browser message would be shown:
+An example where the browser message would be shown:
 ```
  <input id="name" type="text" required="required" /><!-- In Chrome this would say "Please fill out this field." -->
 ```
@@ -81,7 +83,7 @@ You can style the error messages however you like using the class `form__error-m
 
 ## How It Works
 
-oi! uses the excelent HTML constraint validation api and so all of the validation is done by the browser. For more detail check out the [mozilla developer page](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation).
+oi! uses the excelent HTML constraint validation api. For more detail check out the [mozilla developer page](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation).
 
 ## Browser Support
 

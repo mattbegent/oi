@@ -24,8 +24,9 @@ var oi = (function(document) {
         opts = {
             errorHTML: args.errorHTML || '<label class="form__error-message" for="{{id}}" role="alert">{{message}}</label>',
             errorClass: args.errorClass || 'form__error-message',
+            errorPosition: args.errorPosition || 'afterend',
             interactedClass: args.interactedClass || 'field--interacted',
-            error: args.error || undefined // shouldn't really do this
+            error: args.error || undefined
         };
 
         var inputElem = document.createElement('input');
@@ -139,7 +140,7 @@ var oi = (function(document) {
 
         var errorMessage = document.querySelector('.' + opts.errorClass + '[for="' + input.id + '"]');
         if(!errorMessage) {
-            input.insertAdjacentHTML('afterend', template(opts.errorHTML, { id: input.id, message: message }));
+            input.insertAdjacentHTML(opts.errorPosition, template(opts.errorHTML, { id: input.id, message: message }));
         } else {
             errorMessage.textContent = message;
         }
