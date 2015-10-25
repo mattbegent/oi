@@ -3,8 +3,6 @@
    ========================================================================== */
 
 body {
-	background-color: #333;
-	color: #FFF;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 100;
 }
@@ -40,8 +38,9 @@ input[type=text],
 input[type=url],
 input[type=password],
 input[type=email] {
-	background-color: #DFDFDF;
+	/*background-color: #DFDFDF;*/
 	border: none;
+  border-bottom: 1px solid #DFDFDF;
 	padding: 0.5em;
 	width: 100%;
 }
@@ -71,15 +70,31 @@ label {
 }
 
 .field--interacted:invalid {
-	background-color: #df4949;
-	color: #FFF;
+	border-color: #df4949;
 }
 
 .field--interacted:valid {
-	background-color: #00B233;
-	color: #FFF;
+	border-color: #00B233;
 }
 
+
+.button {
+  background-color: #00B233;
+  border: none;
+  padding: 0.3em 1em;
+  color: #FFF;
+  transition: background-color ease-in-out 300ms;
+}
+
+.button:hover,
+.button:focus {
+  background-color: #028628;
+}
+
+.cta {
+  text-align: center;
+  font-size: 1.5em;
+}
 
 @-webkit-keyframes fadeInUp {
   from {
