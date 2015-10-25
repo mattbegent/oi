@@ -20,13 +20,14 @@ var oi = (function(document) {
         if(!args) {
             args = {};
         }
-
+        
         opts = {
             errorHTML: args.errorHTML || '<label class="form__error-message" for="{{id}}" role="alert">{{message}}</label>',
             errorClass: args.errorClass || 'form__error-message',
             errorPosition: args.errorPosition || 'afterend',
             interactedClass: args.interactedClass || 'field--interacted',
-            error: args.error || undefined
+            error: args.error || undefined,
+            watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs)
         };
 
         var inputElem = document.createElement('input');
@@ -36,8 +37,11 @@ var oi = (function(document) {
             var forms = document.getElementsByTagName('form');
             for (var i = 0; i < forms.length; i++) {
                 setupForm(forms[i]);
+
+                if(opts.watchInputs) {
+                    setupInputWatches(forms[i])
+                }
             }
-            setupInputWatches();
 
         }
 
@@ -55,7 +59,6 @@ var oi = (function(document) {
             if (!this.checkValidity()) {
                 e.preventDefault();
                 getMessages(this);
-                setupInputWatches(this);
             }
         }, true);
 
@@ -82,9 +85,9 @@ var oi = (function(document) {
     }
 
     /**
-    * Validates an individual input
+    * Sets up input watches
     * @memberOf oi
-    * @param {currentInput} input to validate
+    * @param {context} context of input watches
     */
     function setupInputWatches(context) {
 
@@ -169,7 +172,8 @@ var oi = (function(document) {
     // public api
     return {
         init: init,
-        validateInput: validateInput
+        validateInput: validateInput,
+        validateForm: getMessages
     };
 
 })(document);

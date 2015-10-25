@@ -13,6 +13,7 @@ A tiny form validation library for custom error messages
 * **errorClass** - the class to add to error messages.
 * **errorPosition** - the position that the error message is display relative to the field. The error message is placed using insertAdjacentHTML so valid values are beforebegin and afterend.
 * **interactedClass** - the class that signals a field has been interacted with.
+* **watchInputs** - a boolean for whether to display input messages on change or not.
 * **error** - this function is fired when an input is invalid.
 
 A full example:
@@ -22,6 +23,7 @@ oi.init({
     errorClass: 'form__error-message',
     errorPosition: 'afterend'
     interactedClass:'field--interacted',
+    watchInputs: true,
     error: function(input) {
         alert('Error');
     }
@@ -79,6 +81,18 @@ You can style the error messages however you like using the class `form__error-m
 	-webkit-animation-name: fadeInUp;
   	animation-name: fadeInUp;
   }
+```
+
+## Methods
+
+* **validateInput** - for validating an individual input. It takes an element as it's only argument.
+* **validateForm** - for validating a whole form. It takes an element as it's only argument.
+
+Examples:
+
+```
+oi.validateInput(document.querySelector('#password1')); // will validate an individual field
+oi.validateForm(document.querySelector('#oi')); // will validate all the fields within the oi form
 ```
 
 ## How It Works
