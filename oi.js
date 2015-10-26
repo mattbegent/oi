@@ -4,7 +4,7 @@
 * @version 0.1.0
 */
 
-var oi = (function(document) {
+var oi = (function(document, undefined) {
 
     'use strict';
 
@@ -22,8 +22,7 @@ var oi = (function(document) {
         }
         
         opts = {
-            errorHTML: args.errorHTML || '<label class="form__error-message" for="{{id}}" role="alert">{{message}}</label>',
-            errorClass: args.errorClass || 'form__error-message',
+            errorHTML: args.errorHTML || '<label class="form__error-message" for="{{id}}" data-oi-id="{{id}}" role="alert">{{message}}</label>',
             errorPosition: args.errorPosition || 'afterend',
             interactedClass: args.interactedClass || 'field--interacted',
             error: args.error || undefined,
@@ -71,12 +70,13 @@ var oi = (function(document) {
     */
     function validateInput(currentInput) {
 
+        var ariaInvalid = 'aria-invalid';
         if(!currentInput.checkValidity()) {
-            currentInput.setAttribute('aria-invalid', 'true');
+            currentInput.setAttribute(ariaInvalid, 'true');
             setMessage(currentInput);
         } else {
-            currentInput.setAttribute('aria-invalid', 'false');
-            var errorMessage = document.querySelector('.' + opts.errorClass + '[for="' + currentInput.id + '"]');
+            currentInput.setAttribute(ariaInvalid, 'false');
+            var errorMessage = document.querySelector('[data-oi-id="' + currentInput.id + '"]');
             if(errorMessage) {
                 errorMessage.parentNode.removeChild(errorMessage); // maybe don't remove?
             }
@@ -132,16 +132,18 @@ var oi = (function(document) {
     function setMessage(input) {
 
         //console.log(input.validity);
-        var message =  ((input.validity.valueMissing) ? input.getAttribute('data-msg-required') : false) ||  
-        ((input.validity.typeMismatch) ? input.getAttribute('data-msg-type') : false) || 
-        ((input.validity.patternMismatch) ? input.getAttribute('data-msg-pattern') : false) || 
-        ((input.validity.tooShort) ? input.getAttribute('data-msg-short') : false) || 
-        ((input.validity.tooLong) ? input.getAttribute('data-msg-long') : false) || 
-        ((input.validity.customError) ? input.getAttribute('data-msg-custom') : false) || 
-        input.getAttribute('data-msg') ||
+        var inputValidity = input.validity;
+        var msgPrefix = 'data-msg';
+        var message =  ((inputValidity.valueMissing) ? input.getAttribute(msgPrefix + '-required') : false) ||  
+        ((inputValidity.typeMismatch) ? input.getAttribute(msgPrefix + '-type') : false) || 
+        ((inputValidity.patternMismatch) ? input.getAttribute(msgPrefix + '-pattern') : false) || 
+        ((inputValidity.tooShort) ? input.getAttribute(msgPrefix + '-short') : false) || 
+        ((inputValidity.tooLong) ? input.getAttribute(msgPrefix + '-long') : false) || 
+        ((inputValidity.customError) ? input.getAttribute(msgPrefix + '-custom') : false) || 
+        input.getAttribute(msgPrefix) ||
         input.validationMessage;
 
-        var errorMessage = document.querySelector('.' + opts.errorClass + '[for="' + input.id + '"]');
+        var errorMessage = document.querySelector('[data-oi-id="' + input.id + '"]');
         if(!errorMessage) {
             input.insertAdjacentHTML(opts.errorPosition, template(opts.errorHTML, { id: input.id, message: message }));
         } else {

@@ -10,7 +10,6 @@ A tiny form validation library for custom error messages
 ## Options
 
 * **errorHTML** - the HTML for the error messages.
-* **errorClass** - the class to add to error messages.
 * **errorPosition** - the position that the error message is display relative to the field. The error message is placed using insertAdjacentHTML so valid values are beforebegin and afterend.
 * **interactedClass** - the class that signals a field has been interacted with.
 * **watchInputs** - a boolean for whether to display input messages on change or not.
@@ -19,7 +18,7 @@ A tiny form validation library for custom error messages
 A full example:
 ```
 oi.init({
-    errorHTML: '<label class="form__error-message" for="{{id}}" role="alert">{{message}}</label>',
+    errorHTML: '<label class="form__error-message" for="{{id}}" data-oi-id="{{id}}" role="alert">{{message}}</label>',
     errorClass: 'form__error-message',
     errorPosition: 'afterend'
     interactedClass:'field--interacted',
