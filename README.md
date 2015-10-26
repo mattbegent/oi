@@ -60,12 +60,10 @@ oi! adds a class of `field--interacted` to fields that the users has interacted 
 ```
 .field--interacted:invalid {
 	background-color: #df4949;
-	color: #FFF;
 }
 
 .field--interacted:valid {
 	background-color: #00B233;
-	color: #FFF;
 }
 ```
 You can style the error messages however you like using the class `form__error-message` (you can change this in the options).
