@@ -1,7 +1,7 @@
 /**
 * @fileOverview oi - A tiny form validation library for custom error messages
 * @author Matt Begent
-* @version 0.1.0
+* @version 0.1.1
 */
 
 var oi = (function(document, undefined) {
@@ -20,9 +20,10 @@ var oi = (function(document, undefined) {
         if(!args) {
             args = {};
         }
-        
+
         opts = {
-            errorHTML: args.errorHTML || '<label class="form__error-message" for="{{id}}" data-oi-id="{{id}}" role="alert">{{message}}</label>',
+            formSelector: args.formSelector || document.getElementsByTagName('form'),
+            errorHTML: args.errorHTML || '<span class="form__error-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
             interactedClass: args.interactedClass || 'field--interacted',
             error: args.error || undefined,
@@ -30,15 +31,14 @@ var oi = (function(document, undefined) {
         };
 
         var inputElem = document.createElement('input');
-        if ('required' in inputElem) { // test for validation support - is there a better test?    
+        if ('required' in inputElem) { // test for validation support - is there a better test?
 
             // setup forms
-            var forms = document.getElementsByTagName('form');
-            for (var i = 0; i < forms.length; i++) {
-                setupForm(forms[i]);
+            for (var i = 0; i < opts.formSelector.length; i++) {
+                setupForm(opts.formSelector[i]);
 
                 if(opts.watchInputs) {
-                    setupInputWatches(forms[i])
+                    setupInputWatches(opts.formSelector[i])
                 }
             }
 
@@ -91,11 +91,7 @@ var oi = (function(document, undefined) {
     */
     function setupInputWatches(context) {
 
-        if(!context) {
-            context = document;
-        }
-
-        var fields = context.querySelectorAll('input, select, textarea');
+        var fields = (context || document).querySelectorAll('input, select, textarea');
         for (var i = 0; i < fields.length; i++) {
 
             fields[i].addEventListener('change', function(e) {
@@ -131,15 +127,15 @@ var oi = (function(document, undefined) {
     */
     function setMessage(input) {
 
-        //console.log(input.validity);
         var inputValidity = input.validity;
         var msgPrefix = 'data-msg';
-        var message =  ((inputValidity.valueMissing) ? input.getAttribute(msgPrefix + '-required') : false) ||  
-        ((inputValidity.typeMismatch) ? input.getAttribute(msgPrefix + '-type') : false) || 
-        ((inputValidity.patternMismatch) ? input.getAttribute(msgPrefix + '-pattern') : false) || 
-        ((inputValidity.tooShort) ? input.getAttribute(msgPrefix + '-short') : false) || 
-        ((inputValidity.tooLong) ? input.getAttribute(msgPrefix + '-long') : false) || 
-        ((inputValidity.customError) ? input.getAttribute(msgPrefix + '-custom') : false) || 
+        var message =  ((inputValidity.valueMissing) ? input.getAttribute(msgPrefix + '-required') : false) ||
+        ((inputValidity.typeMismatch) ? input.getAttribute(msgPrefix + '-type') : false) ||
+        ((inputValidity.patternMismatch) ? input.getAttribute(msgPrefix + '-pattern') : false) ||
+        ((inputValidity.patternMismatch) ? input.getAttribute(msgPrefix + '-regex') : false) || // improve
+        ((inputValidity.tooShort) ? input.getAttribute(msgPrefix + '-short') : false) ||
+        ((inputValidity.tooLong) ? input.getAttribute(msgPrefix + '-long') : false) ||
+        ((inputValidity.customError) ? input.getAttribute(msgPrefix + '-custom') : false) ||
         input.getAttribute(msgPrefix) ||
         input.validationMessage;
 

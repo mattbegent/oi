@@ -13,10 +13,10 @@
         <header role="banner">
             <h1>oi</h1>
         </header>
-        
+
         <main class="main" role="main">
             <form id="oi" method="post" class="form c">
-                    
+
                     <div class="form-row">
                         <label for="name">Name</label>
                         <input id="name" type="text" placeholder="Name" required="required" class="input-large" data-msg="WHoop. This is required."/>
@@ -114,14 +114,18 @@
 
                     <div class="form-row form-row-checkbox">
                         <label for="radio">A label with a radio</label>
-                        <input id="radio" type="radio" required="required"/>
+                        <input id="radio" name="radio" type="radio" required="required"/>
+                        <label for="radio2">A label with a radio</label>
+                        <input id="radio2" name="radio" type="radio" required="required"/>
+                        <label for="radio3">A label with a radio</label>
+                        <input id="radio3" name="radio" type="radio" required="required"/>
                     </div>
 
                     <div class="form-row">
                         <button type="submit" id="submit">Submit</button>
                     </div>
 
-                </form> 
+                </form>
         </main>
 
         <footer role="contentinfo">
@@ -129,11 +133,13 @@
         </footer>
 
     </div>
-    
+
     <script src="../oi.js"></script>
 
     <script type="text/javascript">
-        oi.init();
+        oi.init({
+          formSelector: document.querySelectorAll('form')
+        });
     </script>
 
 </body>
