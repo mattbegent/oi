@@ -25,7 +25,7 @@
 
                 <div class="form-row">
                     <label for="name">Name</label>
-                    <input id="name" type="text" placeholder="Name" required="required" minlength="2" maxlength="20" class="input-large" data-msg-required="This is field is required. If you wouldn't mind sir."/>
+                    <input id="name" type="text" placeholder="Name" required="required" minlength="2" maxlength="20" class="input-large" data-msg-required="This is field is required. If you wouldn't mind sir." />
                 </div>
 
                 <div class="form-row">
@@ -40,7 +40,12 @@
 
                 <div class="form-row form-row-checkbox">
                     <label for="password1">Password</label>
-                    <input id="password1" type="password" required="required" pattern=".{6,}" data-msg-pattern="Pattern mismatch" />
+                    <input id="password1" type="password" required="required" pattern=".{6,}" data-msg-pattern="Pattern mismatch" data-has-match="password2" />
+                </div>
+
+                <div class="form-row form-row-checkbox">
+                    <label for="password2">Confirm Password</label>
+                    <input id="password2" type="password" required="required" data-match="password1" data-msg-match="Must match password 1" />
                 </div>
 
                 <div class="form-row form-row-checkbox">
@@ -63,7 +68,9 @@
     <script src="oi.js"></script>
 
     <script type="text/javascript">
-        oi.init();
+        oi.init({
+          watchInputs: true
+        });
         //oi.validateInput(document.querySelector('#password1'));
         //oi.validateForm(document.querySelector('#oi'))
     </script>

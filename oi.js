@@ -12,6 +12,8 @@ var oi = (function(document, undefined) {
 
     var oiId = 'data-oi-id';
 
+    var ariaInvalid = 'aria-invalid';
+
     /**
     * Init oi
     * @memberOf oi
@@ -35,13 +37,12 @@ var oi = (function(document, undefined) {
         if ('required' in document.createElement('input')) { // test for validation support - is there a better test?
 
             // setup forms
-            for (var i = 0; i < opts.formSelector.length; i++) {
-                setupForm(opts.formSelector[i]);
-
+            each(opts.formSelector, function(item) {
+                setupForm(item);
                 if(opts.watchInputs) {
-                    setupInputWatches(opts.formSelector[i]);
+                    setupInputWatches(item);
                 }
-            }
+            });
 
         }
 
@@ -56,9 +57,10 @@ var oi = (function(document, undefined) {
 
         form.noValidate = true;
         form.addEventListener('submit', function(e) {
-            if (!this.checkValidity()) {
+            var self = this;
+            if (!self.checkValidity()) {
                 e.preventDefault();
-                getMessages(this);
+                getMessages(self);
             }
         }, true);
 
@@ -71,9 +73,8 @@ var oi = (function(document, undefined) {
     */
     function validateInput(currentInput) {
 
-        var ariaInvalid = 'aria-invalid';
+        matchValidate(currentInput);
         if(!currentInput.checkValidity()) {
-            currentInput.setAttribute(ariaInvalid, 'true');
             setMessage(currentInput);
         } else {
             currentInput.setAttribute(ariaInvalid, 'false');
@@ -83,6 +84,39 @@ var oi = (function(document, undefined) {
             }
         }
 
+    }
+
+    /**
+    * Compares two fields
+    * @memberOf oi
+    * @param {currentInput} input to check against
+    */
+    function matchValidate(currentInput) {
+
+        var sourceInput;
+        var copyInput;
+        var shouldMatch = false;
+
+        if(currentInput.hasAttribute('data-has-match')) { // source of match
+            sourceInput = currentInput;
+            copyInput = document.getElementById(currentInput.getAttribute('data-has-match'));
+            shouldMatch = true;
+        }
+
+        if(currentInput.hasAttribute('data-match')) { // copy of match
+            sourceInput = document.getElementById(currentInput.getAttribute('data-match'));
+            copyInput = currentInput;
+            shouldMatch = true;
+        }
+
+        if(shouldMatch && sourceInput && copyInput) {
+            if(sourceInput.value !== copyInput.value) {
+                copyInput.setCustomValidity(copyInput.getAttribute('data-msg-match'));
+                setMessage(copyInput);
+            } else {
+                copyInput.setCustomValidity('');
+            }
+        }
     }
 
     /**
@@ -96,8 +130,9 @@ var oi = (function(document, undefined) {
         for (var i = 0; i < fields.length; i++) {
 
             fields[i].addEventListener('change', function(e) {
-                validateInput(e.target);
-                e.target.classList.add(opts.interactedClass); // add class to signal interaction
+                var currentField = e.target;
+                validateInput(currentField);
+                currentField.classList.add(opts.interactedClass); // add class to signal interaction
             }, true);
 
         }
@@ -112,11 +147,20 @@ var oi = (function(document, undefined) {
     function getMessages(context) {
 
         var invalidSelector = 'input:invalid, select:invalid, textarea:invalid';
+
+        // check matches
+        var matches = context.querySelectorAll('[data-match]');
+        each(matches, function(item) {
+            matchValidate(item);
+        });
+
+        // check all invalid inputs and add messages
         var invalidInputs = context.querySelectorAll(invalidSelector);
-        for (var i = 0; i < invalidInputs.length; i++) {
-            setMessage(invalidInputs[i]);
-            invalidInputs[i].classList.add(opts.interactedClass);
-        }
+        each(invalidInputs, function(item) {
+            setMessage(item);
+            item.classList.add(opts.interactedClass);
+        });
+
         if(invalidInputs.length > 0) {
             invalidInputs[0].focus(); // focus on the first
         }
@@ -130,6 +174,7 @@ var oi = (function(document, undefined) {
     */
     function setMessage(input) {
 
+        input.setAttribute(ariaInvalid, 'true');
         var inputValidity = input.validity;
         var msgPrefix = 'data-msg';
         var message =  ((inputValidity.valueMissing) ? input.getAttribute(msgPrefix + '-required') : false) ||
@@ -153,6 +198,18 @@ var oi = (function(document, undefined) {
             opts.error(input);
         }
 
+    }
+
+    /**
+    * Simple each utility
+    * @memberOf oi
+    * @param {value} value to loop through
+    * @param {cb} callback on each item
+    */
+    function each(value, cb) {
+        for (var i = 0, len = value.length; i < len; i++) {
+            cb(value[i]);
+        }
     }
 
     /**
