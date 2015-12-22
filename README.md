@@ -6,6 +6,7 @@ A tiny form validation library for custom error messages
 
 * Make it easy to style custom error messages instead of the rubbish browser default styling.
 * Use HTML constraint validation API to validate forms.
+* Be accessible.
 * Be as lightweight as possible.
 * Be a simple lightweight alternative to jQuery validate.
 * Be framework agnostic.

@@ -10,6 +10,8 @@ var oi = (function(document, undefined) {
 
     var opts = {};
 
+    var oiId = 'data-oi-id';
+
     /**
     * Init oi
     * @memberOf oi
@@ -26,19 +28,18 @@ var oi = (function(document, undefined) {
             errorHTML: args.errorHTML || '<span class="form__error-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
             interactedClass: args.interactedClass || 'field--interacted',
-            error: args.error || undefined,
+            error: args.error,
             watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs)
         };
 
-        var inputElem = document.createElement('input');
-        if ('required' in inputElem) { // test for validation support - is there a better test?
+        if ('required' in document.createElement('input')) { // test for validation support - is there a better test?
 
             // setup forms
             for (var i = 0; i < opts.formSelector.length; i++) {
                 setupForm(opts.formSelector[i]);
 
                 if(opts.watchInputs) {
-                    setupInputWatches(opts.formSelector[i])
+                    setupInputWatches(opts.formSelector[i]);
                 }
             }
 
@@ -76,7 +77,7 @@ var oi = (function(document, undefined) {
             setMessage(currentInput);
         } else {
             currentInput.setAttribute(ariaInvalid, 'false');
-            var errorMessage = document.querySelector('[data-oi-id="' + currentInput.id + '"]');
+            var errorMessage = document.querySelector('[' + oiId + '="' + currentInput.id + '"]');
             if(errorMessage) {
                 errorMessage.parentNode.removeChild(errorMessage); // maybe don't remove?
             }
@@ -116,7 +117,9 @@ var oi = (function(document, undefined) {
             setMessage(invalidInputs[i]);
             invalidInputs[i].classList.add(opts.interactedClass);
         }
-        context.querySelector(invalidSelector).focus(); // focus on the first
+        if(invalidInputs.length > 0) {
+            invalidInputs[0].focus(); // focus on the first
+        }
 
     }
 
@@ -137,9 +140,9 @@ var oi = (function(document, undefined) {
         ((inputValidity.tooLong) ? input.getAttribute(msgPrefix + '-long') : false) ||
         ((inputValidity.customError) ? input.getAttribute(msgPrefix + '-custom') : false) ||
         input.getAttribute(msgPrefix) ||
-        input.validationMessage;
+        input.validationMessage; // fallback to the browser default message
 
-        var errorMessage = document.querySelector('[data-oi-id="' + input.id + '"]');
+        var errorMessage = document.querySelector('[' + oiId + '="' + input.id + '"]');
         if(!errorMessage) {
             input.insertAdjacentHTML(opts.errorPosition, template(opts.errorHTML, { id: input.id, message: message }));
         } else {
