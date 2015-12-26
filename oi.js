@@ -14,6 +14,8 @@ var oi = (function(document, undefined) {
 
     var ariaInvalid = 'aria-invalid';
 
+    var msgPrefix = 'data-msg';
+
     /**
     * Init oi
     * @memberOf oi
@@ -73,7 +75,10 @@ var oi = (function(document, undefined) {
     */
     function validateInput(currentInput) {
 
-        matchValidate(currentInput);
+        matchValidate(currentInput); // if values need to be compared
+        if(currentInput.getAttribute('type') === 'url') { // check urls because of protocol
+            checkUrl(currentInput);
+        }
         if(!currentInput.checkValidity()) {
             setMessage(currentInput);
         } else {
@@ -111,7 +116,7 @@ var oi = (function(document, undefined) {
 
         if(shouldMatch && sourceInput && copyInput) {
             if(sourceInput.value !== copyInput.value) {
-                copyInput.setCustomValidity(copyInput.getAttribute('data-msg-match'));
+                copyInput.setCustomValidity(copyInput.getAttribute(msgPrefix + '-match'));
                 setMessage(copyInput);
             } else {
                 copyInput.setCustomValidity('');
@@ -176,7 +181,6 @@ var oi = (function(document, undefined) {
 
         input.setAttribute(ariaInvalid, 'true');
         var inputValidity = input.validity;
-        var msgPrefix = 'data-msg';
         var message =  ((inputValidity.valueMissing) ? input.getAttribute(msgPrefix + '-required') : false) ||
         ((inputValidity.typeMismatch) ? input.getAttribute(msgPrefix + '-type') : false) ||
         ((inputValidity.patternMismatch) ? input.getAttribute(msgPrefix + '-pattern') : false) ||
@@ -197,6 +201,22 @@ var oi = (function(document, undefined) {
         if(opts.error) {
             opts.error(input);
         }
+
+    }
+
+    /**
+    * Checks that url contains a protocol because Chrome etc expects one
+    * @memberOf oi
+    * @param {input} input to check
+    */
+    function checkUrl(input) {
+
+        var inputValue = input.value;
+
+        if (inputValue && inputValue.search(/^http[s]?\:\/\//) === -1){
+            inputValue = "http://" + inputValue;
+        }
+        input.value = inputValue;
 
     }
 
