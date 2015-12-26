@@ -23,7 +23,8 @@ A tiny form validation library for custom error messages
 * **errorPosition** - the position that the error message is display relative to the field. The error message is placed using insertAdjacentHTML so valid values are beforebegin and afterend.
 * **interactedClass** - the class that signals a field has been interacted with.
 * **watchInputs** - a boolean for whether to display input messages on change or not.
-* **error** - this function is fired when an input is invalid.
+* **onInvalid** - this function is fired when an input is invalid.
+* **onValid** - this function is fired when an input is valid.
 
 A full example:
 ```
@@ -34,8 +35,11 @@ oi.init({
     errorPosition: 'afterend'
     interactedClass:'oi-has-interacted',
     watchInputs: true,
-    error: function(input) {
-        alert('Error');
+    onInvalid: function(input) {
+        alert('Error!');
+    },
+    onValid: function(input) {
+        alert('Valid!');
     }
 });
 ```

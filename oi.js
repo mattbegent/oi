@@ -1,7 +1,7 @@
 /**
 * @fileOverview oi - A tiny form validation library for custom error messages
 * @author Matt Begent
-* @version 0.1.1
+* @version 0.2.0
 */
 
 var oi = (function(document, undefined) {
@@ -30,7 +30,8 @@ var oi = (function(document, undefined) {
             errorHTML: args.errorHTML || '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
             interactedClass: args.interactedClass || 'oi-has-interacted',
-            error: args.error,
+            onInvalid: args.onInvalid,
+            onValid: args.onValid,
             watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs)
         };
 
@@ -84,6 +85,9 @@ var oi = (function(document, undefined) {
             var errorMessage = document.querySelector('[' + oiId + '="' + currentInput.id + '"]');
             if(errorMessage) {
                 errorMessage.parentNode.removeChild(errorMessage); // maybe don't remove?
+            }
+            if(opts.onValid) {
+                opts.onValid(currentInput);
             }
         }
 
@@ -195,8 +199,8 @@ var oi = (function(document, undefined) {
             errorMessage.textContent = message;
         }
 
-        if(opts.error) {
-            opts.error(input);
+        if(opts.onInvalid) {
+            opts.onInvalid(input);
         }
 
     }

@@ -69,7 +69,13 @@
 
     <script type="text/javascript">
         oi.init({
-          watchInputs: true
+          watchInputs: true,
+          onValid: function(input) {
+            console.log(input);
+          },
+          onInvalid: function(input) {
+            console.log(input);
+          }
         });
         //oi.validateInput(document.querySelector('#password1'));
         //oi.validateForm(document.querySelector('#oi'))
