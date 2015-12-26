@@ -132,15 +132,14 @@ var oi = (function(document, undefined) {
     function setupInputWatches(context) {
 
         var fields = (context || document).querySelectorAll('input, select, textarea');
-        for (var i = 0; i < fields.length; i++) {
-
-            fields[i].addEventListener('change', function(e) {
+        each(fields, function(item) { 
+            item.addEventListener('change', function(e) {
                 var currentField = e.target;
                 validateInput(currentField);
                 currentField.classList.add(opts.interactedClass); // add class to signal interaction
             }, true);
 
-        }
+        });
 
     }
 
