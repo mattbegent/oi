@@ -17,7 +17,7 @@ input {
 .wrapper {
    width: 80%;
    margin: 0 auto; 
-   max-width: 500px;
+   max-width: 400px;
 }
 
 h1,
@@ -57,7 +57,7 @@ label {
 	display: inline;
 }
 
-.form__error-message{
+.oi-message {
 	display: block;
 	color: #df4949;
 	margin-top: 2px;
@@ -69,11 +69,11 @@ label {
   	animation-name: fadeInUp;
 }
 
-.field--interacted:invalid {
+.oi-has-interacted:invalid {
 	border-color: #df4949;
 }
 
-.field--interacted:valid {
+.oi-has-interacted:valid {
 	border-color: #00B233;
 }
 

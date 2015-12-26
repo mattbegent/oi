@@ -1,14 +1,20 @@
 /**
 * @fileOverview oi - A tiny form validation library for custom error messages
 * @author Matt Begent
-* @version 0.1.0
+* @version 0.2.0
 */
 
-var oi = (function(document) {
+var oi = (function(document, undefined) {
 
     'use strict';
 
     var opts = {};
+
+    var oiId = 'data-oi-id';
+
+    var ariaInvalid = 'aria-invalid';
+
+    var msgPrefix = 'data-msg';
 
     /**
     * Init oi
@@ -17,27 +23,27 @@ var oi = (function(document) {
     */
     function init(args) {
 
-        if(!args) {
-            args = {};
-        }
+        args = args || {};
 
         opts = {
-            errorHTML: args.errorHTML || '<label class="form__error-message" for="{{id}}" role="alert">{{message}}</label>',
-            errorClass: args.errorClass || 'form__error-message',
+            formSelector: args.formSelector || document.getElementsByTagName('form'),
+            errorHTML: args.errorHTML || '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
-            interactedClass: args.interactedClass || 'field--interacted',
-            error: args.error || undefined
+            interactedClass: args.interactedClass || 'oi-has-interacted',
+            onInvalid: args.onInvalid,
+            onValid: args.onValid,
+            watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs)
         };
 
-        var inputElem = document.createElement('input');
-        if ('required' in inputElem) { // test for validation support - is there a better test?    
+        if ('required' in document.createElement('input')) { // test for validation support - is there a better test?
 
             // setup forms
-            var forms = document.getElementsByTagName('form');
-            for (var i = 0; i < forms.length; i++) {
-                setupForm(forms[i]);
-            }
-            setupInputWatches();
+            each(opts.formSelector, function(item) {
+                setupForm(item);
+                if(opts.watchInputs) {
+                    setupInputWatches(item);
+                }
+            });
 
         }
 
@@ -52,10 +58,10 @@ var oi = (function(document) {
 
         form.noValidate = true;
         form.addEventListener('submit', function(e) {
-            if (!this.checkValidity()) {
+            var self = this;
+            if (!self.checkValidity()) {
                 e.preventDefault();
-                getMessages(this);
-                setupInputWatches(this);
+                getMessages(self);
             }
         }, true);
 
@@ -68,39 +74,74 @@ var oi = (function(document) {
     */
     function validateInput(currentInput) {
 
+        matchValidate(currentInput); // if values need to be compared
+        if(currentInput.getAttribute('type') === 'url') { // check urls because of protocol
+            checkUrl(currentInput);
+        }
         if(!currentInput.checkValidity()) {
-            currentInput.setAttribute('aria-invalid', 'true');
             setMessage(currentInput);
         } else {
-            currentInput.setAttribute('aria-invalid', 'false');
-            var errorMessage = document.querySelector('.' + opts.errorClass + '[for="' + currentInput.id + '"]');
+            currentInput.setAttribute(ariaInvalid, 'false');
+            var errorMessage = document.querySelector('[' + oiId + '="' + currentInput.id + '"]');
             if(errorMessage) {
                 errorMessage.parentNode.removeChild(errorMessage); // maybe don't remove?
+            }
+            if(opts.onValid) {
+                opts.onValid(currentInput);
             }
         }
 
     }
 
     /**
-    * Validates an individual input
+    * Compares two fields
     * @memberOf oi
-    * @param {currentInput} input to validate
+    * @param {currentInput} input to check against
+    */
+    function matchValidate(currentInput) {
+
+        var sourceInput;
+        var copyInput;
+        var shouldMatch = false;
+
+        if(currentInput.hasAttribute('data-has-match')) { // source of match
+            sourceInput = currentInput;
+            copyInput = document.getElementById(currentInput.getAttribute('data-has-match'));
+            shouldMatch = true;
+        }
+
+        if(currentInput.hasAttribute('data-match')) { // copy of match
+            sourceInput = document.getElementById(currentInput.getAttribute('data-match'));
+            copyInput = currentInput;
+            shouldMatch = true;
+        }
+
+        if(shouldMatch && sourceInput && copyInput) {
+            if(sourceInput.value !== copyInput.value) {
+                copyInput.setCustomValidity(copyInput.getAttribute(msgPrefix + '-match'));
+                setMessage(copyInput);
+            } else {
+                copyInput.setCustomValidity('');
+            }
+        }
+    }
+
+    /**
+    * Sets up input watches
+    * @memberOf oi
+    * @param {context} context of input watches
     */
     function setupInputWatches(context) {
 
-        if(!context) {
-            context = document;
-        }
-
-        var fields = context.querySelectorAll('input, select, textarea');
-        for (var i = 0; i < fields.length; i++) {
-
-            fields[i].addEventListener('change', function(e) {
-                validateInput(e.target);
-                e.target.classList.add(opts.interactedClass); // add class to signal interaction
+        var fields = (context || document).querySelectorAll('input, select, textarea');
+        each(fields, function(item) { 
+            item.addEventListener('change', function(e) {
+                var currentField = e.target;
+                validateInput(currentField);
+                currentField.classList.add(opts.interactedClass); // add class to signal interaction
             }, true);
 
-        }
+        });
 
     }
 
@@ -112,12 +153,23 @@ var oi = (function(document) {
     function getMessages(context) {
 
         var invalidSelector = 'input:invalid, select:invalid, textarea:invalid';
+
+        // check matches
+        var matches = context.querySelectorAll('[data-match]');
+        each(matches, function(item) {
+            matchValidate(item);
+        });
+
+        // check all invalid inputs and add messages
         var invalidInputs = context.querySelectorAll(invalidSelector);
-        for (var i = 0; i < invalidInputs.length; i++) {
-            setMessage(invalidInputs[i]);
-            invalidInputs[i].classList.add(opts.interactedClass);
+        each(invalidInputs, function(item) {
+            setMessage(item);
+            item.classList.add(opts.interactedClass);
+        });
+
+        if(invalidInputs.length > 0) {
+            invalidInputs[0].focus(); // focus on the first
         }
-        document.querySelector(invalidSelector).focus(); // focus on the first
 
     }
 
@@ -128,25 +180,56 @@ var oi = (function(document) {
     */
     function setMessage(input) {
 
-        //console.log(input.validity);
-        var message =  ((input.validity.valueMissing) ? input.getAttribute('data-msg-required') : false) ||  
-        ((input.validity.typeMismatch) ? input.getAttribute('data-msg-type') : false) || 
-        ((input.validity.patternMismatch) ? input.getAttribute('data-msg-pattern') : false) || 
-        ((input.validity.tooShort) ? input.getAttribute('data-msg-short') : false) || 
-        ((input.validity.tooLong) ? input.getAttribute('data-msg-long') : false) || 
-        ((input.validity.customError) ? input.getAttribute('data-msg-custom') : false) || 
-        input.getAttribute('data-msg') ||
-        input.validationMessage;
+        input.setAttribute(ariaInvalid, 'true');
+        var inputValidity = input.validity;
+        var message =  ((inputValidity.valueMissing) ? input.getAttribute(msgPrefix + '-required') : false) ||
+        ((inputValidity.typeMismatch) ? input.getAttribute(msgPrefix + '-type') : false) ||
+        ((inputValidity.patternMismatch) ? input.getAttribute(msgPrefix + '-pattern') : false) ||
+        ((inputValidity.patternMismatch) ? input.getAttribute(msgPrefix + '-regex') : false) || // improve
+        ((inputValidity.tooShort) ? input.getAttribute(msgPrefix + '-short') : false) ||
+        ((inputValidity.tooLong) ? input.getAttribute(msgPrefix + '-long') : false) ||
+        ((inputValidity.customError) ? input.getAttribute(msgPrefix + '-custom') : false) ||
+        input.getAttribute(msgPrefix) ||
+        input.validationMessage; // fallback to the browser default message
 
-        var errorMessage = document.querySelector('.' + opts.errorClass + '[for="' + input.id + '"]');
+        var errorMessage = document.querySelector('[' + oiId + '="' + input.id + '"]');
         if(!errorMessage) {
             input.insertAdjacentHTML(opts.errorPosition, template(opts.errorHTML, { id: input.id, message: message }));
         } else {
             errorMessage.textContent = message;
         }
 
-        if(opts.error) {
-            opts.error(input);
+        if(opts.onInvalid) {
+            opts.onInvalid(input);
+        }
+
+    }
+
+    /**
+    * Checks that url contains a protocol because Chrome etc expects one
+    * @memberOf oi
+    * @param {input} input to check
+    */
+    function checkUrl(input) {
+
+        var inputValue = input.value;
+        if (inputValue && inputValue.search(/^http[s]?\:\/\//) === -1){
+            inputValue = "http://" + inputValue;
+        }
+        input.value = inputValue;
+
+    }
+
+    /**
+    * Simple each utility
+    * @memberOf oi
+    * @param {value} value to loop through
+    * @param {cb} callback on each item
+    */
+    function each(value, cb) {
+
+        for (var i = 0, len = value.length; i < len; i++) {
+            cb(value[i]);
         }
 
     }
@@ -169,7 +252,8 @@ var oi = (function(document) {
     // public api
     return {
         init: init,
-        validateInput: validateInput
+        validateInput: validateInput,
+        validateForm: getMessages
     };
 
 })(document);

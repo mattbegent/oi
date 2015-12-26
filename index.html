@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>oi!</title>
+    <title>oi! - Tiny HTML5 Form Validation Library</title>
     <meta name="viewport" content="width=device-width">
+    <meta name="author" content="Matt Begent">
+    <meta name="description" content="A tiny HTML5 form validation library for custom error messages">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' rel='stylesheet' type='text/css'>
@@ -15,17 +17,17 @@
 
         <header role="banner">
             <h1 class="title--primary">oi!</h1>
-            <h2 class="title--secondary">A tiny form validation library for custom error messages</h2>
+            <h2 class="title--secondary">A tiny HTML5 form validation library for custom error messages</h2>
         </header>
-        
+
         <main class="main" role="main">
 
             <h2>Example</h2>
             <form id="oi" method="post" class="form c">
-                    
+
                 <div class="form-row">
                     <label for="name">Name</label>
-                    <input id="name" type="text" placeholder="Name" required="required" minlength="2" maxlength="20" class="input-large" data-msg-required="This is field is required. If you wouldn't mind sir."/>
+                    <input id="name" type="text" placeholder="Name" required="required" minlength="2" maxlength="20" class="input-large" data-msg-required="This is field is required. If you wouldn't mind sir." />
                 </div>
 
                 <div class="form-row">
@@ -40,11 +42,16 @@
 
                 <div class="form-row form-row-checkbox">
                     <label for="password1">Password</label>
-                    <input id="password1" type="password" required="required" pattern=".{6,}" data-msg-pattern="Pattern mismatch" />
+                    <input id="password1" type="password" required="required" pattern=".{6,}" data-msg-pattern="Pattern mismatch" data-has-match="password2" />
                 </div>
 
                 <div class="form-row form-row-checkbox">
-                    <label for="checkbox" class="label--inline">A label with a checkbox</label> 
+                    <label for="password2">Confirm Password</label>
+                    <input id="password2" type="password" required="required" data-match="password1" data-msg-match="Must match password 1" />
+                </div>
+
+                <div class="form-row form-row-checkbox">
+                    <label for="checkbox" class="label--inline">A label with a checkbox</label>
                     <input id="checkbox" type="checkbox" required="required"/>
                 </div>
 
@@ -54,15 +61,15 @@
 
             </form>
 
-            <p class="cta"><a href="https://github.com/mattbegent/oi">Full Documentation</a></p> 
+            <p class="cta"><a href="https://github.com/mattbegent/oi">Full Documentation</a></p>
 
         </main>
 
     </div>
-    
+
     <script src="oi.js"></script>
 
-    <script type="text/javascript">
+    <script>
         oi.init();
     </script>
 
