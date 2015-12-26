@@ -29,10 +29,10 @@ A full example:
 ```
 oi.init({
     formSelector: document.getElementsByTagName('form'),
-    errorHTML: '<span class="form__error-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
-    errorClass: 'form__error-message',
+    errorHTML: '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
+    errorClass: 'oi-message',
     errorPosition: 'afterend'
-    interactedClass:'field--interacted',
+    interactedClass:'oi-has-interacted',
     watchInputs: true,
     error: function(input) {
         alert('Error');
@@ -67,19 +67,19 @@ An example where the browser message would be shown:
 
 ## Styling Errors
 
-oi! adds a class of `field--interacted` to fields that the users has interacted with (you can change this in the options). This allows you to style fields using `:invalid` and `:valid` pseudo-classes.
+oi! adds a class of `oi-has-interacted` to fields that the users has interacted with (you can change this in the options). This allows you to style fields using `:invalid` and `:valid` pseudo-classes.
 ```
-.field--interacted:invalid {
+.oi-has-interacted:invalid {
 	background-color: #df4949;
 }
 
-.field--interacted:valid {
+.oi-has-interacted:valid {
 	background-color: #00B233;
 }
 ```
-You can style the error messages however you like using the class `form__error-message` (you can change this in the options).
+You can style the error messages however you like using the class `oi-message` (you can change this in the options).
 ```
-.form__error-message{
+.oi-message {
 	display: block;
 	color: #df4949;
 	-webkit-animation-duration: 500ms;

@@ -23,15 +23,13 @@ var oi = (function(document, undefined) {
     */
     function init(args) {
 
-        if(!args) {
-            args = {};
-        }
+        args = args || {};
 
         opts = {
             formSelector: args.formSelector || document.getElementsByTagName('form'),
-            errorHTML: args.errorHTML || '<span class="form__error-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
+            errorHTML: args.errorHTML || '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
-            interactedClass: args.interactedClass || 'field--interacted',
+            interactedClass: args.interactedClass || 'oi-has-interacted',
             error: args.error,
             watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs)
         };
@@ -211,7 +209,6 @@ var oi = (function(document, undefined) {
     function checkUrl(input) {
 
         var inputValue = input.value;
-
         if (inputValue && inputValue.search(/^http[s]?\:\/\//) === -1){
             inputValue = "http://" + inputValue;
         }
@@ -226,9 +223,11 @@ var oi = (function(document, undefined) {
     * @param {cb} callback on each item
     */
     function each(value, cb) {
+
         for (var i = 0, len = value.length; i < len; i++) {
             cb(value[i]);
         }
+
     }
 
     /**
