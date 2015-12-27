@@ -27,7 +27,7 @@ var oi = (function(document, undefined) {
 
         opts = {
             formSelector: args.formSelector || document.getElementsByTagName('form'),
-            errorHTML: args.errorHTML || '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
+            errorHTML: args.errorHTML || '<span class="oi-message" ' + oiId + '="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
             interactedClass: args.interactedClass || 'oi-has-interacted',
             onInvalid: args.onInvalid,
