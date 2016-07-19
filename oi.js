@@ -91,6 +91,8 @@ var oi = (function(document, undefined) {
             }
         }
 
+        currentInput.classList.add(opts.interactedClass);
+
     }
 
     /**
@@ -134,11 +136,10 @@ var oi = (function(document, undefined) {
     function setupInputWatches(context) {
 
         var fields = (context || document).querySelectorAll('input, select, textarea');
-        each(fields, function(item) { 
+        each(fields, function(item) {
             item.addEventListener('change', function(e) {
                 var currentField = e.target;
                 validateInput(currentField);
-                currentField.classList.add(opts.interactedClass); // add class to signal interaction
             }, true);
 
         });
@@ -152,19 +153,10 @@ var oi = (function(document, undefined) {
     */
     function getMessages(context) {
 
-        var invalidSelector = 'input:invalid, select:invalid, textarea:invalid';
-
-        // check matches
-        var matches = context.querySelectorAll('[data-match]');
-        each(matches, function(item) {
-            matchValidate(item);
-        });
-
         // check all invalid inputs and add messages
-        var invalidInputs = context.querySelectorAll(invalidSelector);
+        var invalidInputs = context.querySelectorAll('input:invalid, select:invalid, textarea:invalid');
         each(invalidInputs, function(item) {
-            setMessage(item);
-            item.classList.add(opts.interactedClass);
+            validateInput(item);
         });
 
         if(invalidInputs.length > 0) {
