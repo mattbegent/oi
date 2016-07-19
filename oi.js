@@ -32,7 +32,8 @@ var oi = (function(document, undefined) {
             interactedClass: args.interactedClass || 'oi-has-interacted',
             onInvalid: args.onInvalid,
             onValid: args.onValid,
-            watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs)
+            watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs),
+            validateHidden: ((args.validateHidden === undefined) ? false : args.validateHidden)
         };
 
         if ('required' in document.createElement('input')) { // test for validation support - is there a better test?
@@ -73,6 +74,12 @@ var oi = (function(document, undefined) {
     * @param {currentInput} input to validate
     */
     function validateInput(currentInput) {
+
+        if(opts.validateHidden) {
+            if (isHidden(currentInput)) { // don't validate hidden inputs
+                return;
+            }
+        }
 
         matchValidate(currentInput); // if values need to be compared
         if(currentInput.getAttribute('type') === 'url') { // check urls because of protocol
@@ -210,6 +217,16 @@ var oi = (function(document, undefined) {
         }
         input.value = inputValue;
 
+    }
+
+    /**
+    * Checks if an element is hidden
+    * @memberOf oi
+    * @param {el} input to check
+    */
+
+    function isHidden(el) {
+        return (el.offsetParent === null);
     }
 
     /**
