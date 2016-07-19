@@ -32,7 +32,7 @@ oi.init({
     formSelector: document.getElementsByTagName('form'),
     errorHTML: '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
     errorClass: 'oi-message',
-    errorPosition: 'afterend'
+    errorPosition: 'afterend',
     interactedClass:'oi-has-interacted',
     watchInputs: true,
     onInvalid: function(input) {
