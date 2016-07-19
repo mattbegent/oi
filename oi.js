@@ -167,7 +167,9 @@ var oi = (function(document, undefined) {
         });
 
         if(invalidInputs.length > 0) {
-            invalidInputs[0].focus(); // focus on the first
+            if(document.activeElement.getAttribute("aria-invalid") === "false") {
+              invalidInputs[0].focus(); // focus on the first element if the current active element is valid otherwise stay where the user is
+            }
         }
 
     }
