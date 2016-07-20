@@ -1,7 +1,7 @@
 /**
 * @fileOverview oi - A tiny form validation library for custom error messages
 * @author Matt Begent
-* @version 0.2.0
+* @version 0.3.0
 */
 
 var oi = (function(document, undefined) {
@@ -15,6 +15,8 @@ var oi = (function(document, undefined) {
     var ariaInvalid = 'aria-invalid';
 
     var msgPrefix = 'data-msg';
+
+    var allFieldsSelector = 'input, select, textarea';
 
     /**
     * Init oi
@@ -142,7 +144,7 @@ var oi = (function(document, undefined) {
     */
     function setupInputWatches(context) {
 
-        var fields = (context || document).querySelectorAll('input, select, textarea');
+        var fields = (context || document).querySelectorAll(allFieldsSelector);
         each(fields, function(item) {
             item.addEventListener('change', function(e) {
                 var currentField = e.target;
@@ -160,15 +162,15 @@ var oi = (function(document, undefined) {
     */
     function getMessages(context) {
 
-        // check all invalid inputs and add messages
-        var invalidInputs = context.querySelectorAll('input:invalid, select:invalid, textarea:invalid');
-        each(invalidInputs, function(item) {
+        // validate all inputs
+        each(context.querySelectorAll(allFieldsSelector), function (item) {
             validateInput(item);
         });
 
-        if(invalidInputs.length > 0) {
-            if(document.activeElement.getAttribute("aria-invalid") === "false") {
-              invalidInputs[0].focus(); // focus on the first element if the current active element is valid otherwise stay where the user is
+        var invalidInputs = context.querySelectorAll('input:invalid, select:invalid, textarea:invalid');
+        if (invalidInputs.length > 0) {
+            if (document.activeElement.getAttribute("aria-invalid") === "false") {
+                invalidInputs[0].focus(); // focus on the first element if the current active element is valid otherwise stay where the user is
             }
         }
 

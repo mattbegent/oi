@@ -1,6 +1,6 @@
 {
   "name": "oi",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A tiny form validation library for custom error messages",
   "main": "oi.js",
   "directories": {
