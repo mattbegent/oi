@@ -31,6 +31,7 @@ var oi = (function(document, undefined) {
             formSelector: args.formSelector || document.getElementsByTagName('form'),
             errorHTML: args.errorHTML || '<span class="oi-message" ' + oiId + '="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
+            errorScrollOffset: args.errorScrollOffset || 75,
             interactedClass: args.interactedClass || 'oi-has-interacted',
             onInvalid: args.onInvalid,
             onValid: args.onValid,
@@ -168,12 +169,16 @@ var oi = (function(document, undefined) {
         });
 
         var invalidInputs = context.querySelectorAll('input:invalid, select:invalid, textarea:invalid');
+
         if (invalidInputs.length > 0) {
-            if (document.activeElement.getAttribute("aria-invalid") === "false") {
-                invalidInputs[0].focus(); // focus on the first element if the current active element is valid otherwise stay where the user is
+            if (!isInputTextareaOrSelect(document.activeElement)) {
+                setFocusAndScroll(invalidInputs[0]);
+            } else {
+                if (document.activeElement.getAttribute("aria-invalid") === "false") {
+                    setFocusAndScroll(invalidInputs[0]);
+                }
             }
         }
-
     }
 
     /**
@@ -209,6 +214,18 @@ var oi = (function(document, undefined) {
     }
 
     /**
+    * Sets the focus on an input and scrolls to the position
+    * @memberOf oi
+    * @param {input} input to check
+    */
+    function setFocusAndScroll(el) {
+
+        el.focus(); // focus on the first element if the current active element is valid otherwise stay where the user is
+        scrollToElement(el); // scroll to the position of that element
+
+    }
+
+    /**
     * Checks that url contains a protocol because Chrome etc expects one
     * @memberOf oi
     * @param {input} input to check
@@ -228,9 +245,34 @@ var oi = (function(document, undefined) {
     * @memberOf oi
     * @param {el} input to check
     */
-
     function isHidden(el) {
         return (el.offsetParent === null);
+    }
+
+    /**
+    * Scroll to element position
+    * @memberOf oi
+    * @param {el} input to scroll to
+    */
+    function scrollToElement(el) {
+        var scrollTargetPosition = el.getBoundingClientRect().top - opts.errorScrollOffset + (window.pageYOffset || document.documentElement.scrollTop);
+        window.scrollTo(0, scrollTargetPosition);
+    }
+
+    /**
+    * Checks if an element is a tag type of input, textarean or select
+    * @memberOf oi
+    * @param {el} input to check
+    */
+    function isInputTextareaOrSelect(el) {
+
+        var tagName = el.tagName;
+        if(tagName) {
+            return tagName.toLowerCase() === 'input' || tagName.toLowerCase() === 'textarea' || tagName.toLowerCase() === 'select';
+        } else {
+            return false;
+        }
+
     }
 
     /**

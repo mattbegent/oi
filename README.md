@@ -21,6 +21,7 @@ A tiny form validation library for custom error messages
 * **formSelector** - the elements that oi should be enabled for. By default it's all forms on the page, document.getElementsByTagName('form'). Must be a nodelist.
 * **errorHTML** - the HTML for the error messages. This must contain data-oi-id, as this is used to associate with id of the input which has the error.
 * **errorPosition** - the position that the error message is display relative to the field. The error message is placed using insertAdjacentHTML so valid values are beforebegin and afterend.
+* **errorScrollOffset** - an offset added to the page scroll position when there are form errors.
 * **interactedClass** - the class that signals a field has been interacted with.
 * **watchInputs** - a boolean for whether to display input messages on change or not.
 * **validateHidden** - a boolean for whether to validate hidden inputs or not.
@@ -34,6 +35,7 @@ oi.init({
     errorHTML: '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
     errorClass: 'oi-message',
     errorPosition: 'afterend',
+    errorScrollOffset: 75,
     interactedClass:'oi-has-interacted',
     watchInputs: true,
     validateHidden: false,
