@@ -79,16 +79,17 @@ label {
 
 
 .button {
-  background-color: #00B233;
+  background-color: #F56936;
   border: none;
-  padding: 0.3em 1em;
+  padding: 0.5em 1.5em;
   color: #FFF;
+  border-radius: 3px;
   transition: background-color ease-in-out 300ms;
 }
 
 .button:hover,
 .button:focus {
-  background-color: #028628;
+  background-color: #FEA22F;
 }
 
 .cta {

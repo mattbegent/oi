@@ -1,7 +1,8 @@
+
 /**
 * @fileOverview oi - A tiny form validation library for custom error messages
 * @author Matt Begent
-* @version 0.2.0
+* @version 0.3.0
 */
 
 var oi = (function(document, undefined) {
@@ -16,6 +17,8 @@ var oi = (function(document, undefined) {
 
     var msgPrefix = 'data-msg';
 
+    var allFieldsSelector = 'input, select, textarea';
+
     /**
     * Init oi
     * @memberOf oi
@@ -27,12 +30,14 @@ var oi = (function(document, undefined) {
 
         opts = {
             formSelector: args.formSelector || document.getElementsByTagName('form'),
-            errorHTML: args.errorHTML || '<span class="oi-message" data-oi-id="{{id}}" role="alert">{{message}}</span>',
+            errorHTML: args.errorHTML || '<span class="oi-message" ' + oiId + '="{{id}}" role="alert">{{message}}</span>',
             errorPosition: args.errorPosition || 'afterend',
+            errorScrollOffset: args.errorScrollOffset || 75,
             interactedClass: args.interactedClass || 'oi-has-interacted',
             onInvalid: args.onInvalid,
             onValid: args.onValid,
-            watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs)
+            watchInputs: ((args.watchInputs === undefined) ? true : args.watchInputs),
+            validateHidden: ((args.validateHidden === undefined) ? false : args.validateHidden)
         };
 
         if ('required' in document.createElement('input')) { // test for validation support - is there a better test?
@@ -74,6 +79,12 @@ var oi = (function(document, undefined) {
     */
     function validateInput(currentInput) {
 
+        if(opts.validateHidden) {
+            if (isHidden(currentInput)) { // don't validate hidden inputs
+                return;
+            }
+        }
+
         matchValidate(currentInput); // if values need to be compared
         if(currentInput.getAttribute('type') === 'url') { // check urls because of protocol
             checkUrl(currentInput);
@@ -90,6 +101,8 @@ var oi = (function(document, undefined) {
                 opts.onValid(currentInput);
             }
         }
+
+        currentInput.classList.add(opts.interactedClass);
 
     }
 
@@ -133,12 +146,11 @@ var oi = (function(document, undefined) {
     */
     function setupInputWatches(context) {
 
-        var fields = (context || document).querySelectorAll('input, select, textarea');
-        each(fields, function(item) { 
+        var fields = (context || document).querySelectorAll(allFieldsSelector);
+        each(fields, function(item) {
             item.addEventListener('change', function(e) {
                 var currentField = e.target;
                 validateInput(currentField);
-                currentField.classList.add(opts.interactedClass); // add class to signal interaction
             }, true);
 
         });
@@ -152,25 +164,22 @@ var oi = (function(document, undefined) {
     */
     function getMessages(context) {
 
-        var invalidSelector = 'input:invalid, select:invalid, textarea:invalid';
-
-        // check matches
-        var matches = context.querySelectorAll('[data-match]');
-        each(matches, function(item) {
-            matchValidate(item);
+        // validate all inputs
+        each(context.querySelectorAll(allFieldsSelector), function (item) {
+            validateInput(item);
         });
 
-        // check all invalid inputs and add messages
-        var invalidInputs = context.querySelectorAll(invalidSelector);
-        each(invalidInputs, function(item) {
-            setMessage(item);
-            item.classList.add(opts.interactedClass);
-        });
+        var invalidInputs = context.querySelectorAll('input:invalid, select:invalid, textarea:invalid');
 
-        if(invalidInputs.length > 0) {
-            invalidInputs[0].focus(); // focus on the first
+        if (invalidInputs.length > 0) {
+            if (!isInputTextareaOrSelect(document.activeElement)) {
+                setFocusAndScroll(invalidInputs[0]);
+            } else {
+                if (document.activeElement.getAttribute("aria-invalid") === "false") {
+                    setFocusAndScroll(invalidInputs[0]);
+                }
+            }
         }
-
     }
 
     /**
@@ -206,6 +215,18 @@ var oi = (function(document, undefined) {
     }
 
     /**
+    * Sets the focus on an input and scrolls to the position
+    * @memberOf oi
+    * @param {input} input to check
+    */
+    function setFocusAndScroll(el) {
+
+        el.focus(); // focus on the first element if the current active element is valid otherwise stay where the user is
+        scrollToElement(el); // scroll to the position of that element
+
+    }
+
+    /**
     * Checks that url contains a protocol because Chrome etc expects one
     * @memberOf oi
     * @param {input} input to check
@@ -217,6 +238,41 @@ var oi = (function(document, undefined) {
             inputValue = "http://" + inputValue;
         }
         input.value = inputValue;
+
+    }
+
+    /**
+    * Checks if an element is hidden
+    * @memberOf oi
+    * @param {el} input to check
+    */
+    function isHidden(el) {
+        return (el.offsetParent === null);
+    }
+
+    /**
+    * Scroll to element position
+    * @memberOf oi
+    * @param {el} input to scroll to
+    */
+    function scrollToElement(el) {
+        var scrollTargetPosition = el.getBoundingClientRect().top - opts.errorScrollOffset + (window.pageYOffset || document.documentElement.scrollTop);
+        window.scrollTo(0, scrollTargetPosition);
+    }
+
+    /**
+    * Checks if an element is a tag type of input, textarean or select
+    * @memberOf oi
+    * @param {el} input to check
+    */
+    function isInputTextareaOrSelect(el) {
+
+        var tagName = el.tagName;
+        if(tagName) {
+            return tagName.toLowerCase() === 'input' || tagName.toLowerCase() === 'textarea' || tagName.toLowerCase() === 'select';
+        } else {
+            return false;
+        }
 
     }
 
